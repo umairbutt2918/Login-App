@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+
+  db:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: loginapp
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database:/docker-entrypoint-initdb.d
+
+  backend:
+    image: umairbutt2918/login-backend
+    container_name: backend
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: 12345678
+      DB_NAME: loginapp
+    depends_on:
+      - db
+
+  frontend:
+    image: yourdockerhubusername/login-frontend
+    container_name: frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
